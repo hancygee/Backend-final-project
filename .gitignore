@@ -147,3 +147,28 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Uploaded files
+backend/uploads/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies and build files
+node_modules/
+dist/
+coverage/
+
+# Prisma generated client
+backend/src/generated/prisma/
+
+# Uploaded images
+backend/uploads/
+
+# Local test image
+/Deluxe_King_Room.jpg
+
+# Accidental file
+/tore --staged Deluxe_King_Room.jpg
