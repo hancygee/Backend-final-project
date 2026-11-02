@@ -55,6 +55,24 @@ Development and collaboration must comply with academic integrity guidelines.
 | Containerization        | Docker & Docker Compose          |
 | Deployment              | School-provided or public server |
 
+## Local Development Setup
+
+1. Copy `backend/.env.example` to `backend/.env`.
+2. From the repository root, start the local MySQL database with `docker compose up -d`.
+   Compose uses development-only password defaults; set `MYSQL_ROOT_PASSWORD` and `MYSQL_PASSWORD` in the environment to override them.
+3. From the `backend` directory, apply the database migrations with `npx prisma migrate deploy`.
+4. Start the API with `npm run start:dev`.
+
+The registration endpoint is `POST /auth/register`. Send JSON with `name`, `email`, and a password of at least 8 characters, for example:
+
+```json
+{
+  "name": "Leaf",
+  "email": "leaf@example.com",
+  "password": "replace-with-a-password"
+}
+```
+
 ## 4. System Roles
 
 The system supports three categories of users.
@@ -394,4 +412,3 @@ https://wudhicharts.notion.site/69-1-ITCS258-Hotel-Booking-Specification-3af4472
 **Academic Notice:** This README is a project-oriented adaptation of the ITCS258 assignment description. The official course documents remain authoritative. All implementation and collaboration must comply with the course's academic integrity rules.
 
 **© Faculty of ICT, Mahidol University. All rights reserved.**
-
