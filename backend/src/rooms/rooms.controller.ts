@@ -11,6 +11,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -25,6 +26,7 @@ import { mkdir, unlink, writeFile } from 'fs/promises';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { SearchRoomsDto } from './dto/search-room.dto';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -45,6 +47,13 @@ export class RoomsController {
   @Get()
   async findAll() {
     return this.roomsService.findAll();
+  }
+
+  @Get('search')
+  async searchAvailableRooms(
+    @Query() searchRoomsDto: SearchRoomsDto,
+  ) {
+    return this.roomsService.searchAvailableRooms(searchRoomsDto);
   }
 
   // ==========================================

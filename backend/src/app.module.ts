@@ -9,7 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { AuthModule } from './auth/auth.module';
 import { BookingsModule } from './bookings/bookings.module';
-
+import { NotificationsModule } from './notifications/notifications.module'; // 1. Import NotificationsModule
 
 @Module({
   imports: [
@@ -25,6 +25,8 @@ import { BookingsModule } from './bookings/bookings.module';
 
     BookingsModule,
 
+    NotificationsModule, // 2. Add NotificationsModule here
+
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
@@ -34,8 +36,6 @@ import { BookingsModule } from './bookings/bookings.module';
         fallthrough: false,
       },
     }),
-
-    BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

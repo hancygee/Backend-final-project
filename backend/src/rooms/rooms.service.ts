@@ -1,9 +1,12 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { BookingStatus } from '../generated/prisma/enums';
 import { CreateRoomDto } from './dto/create-room.dto';
+import { SearchRoomsDto } from './dto/search-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 
 @Injectable()
@@ -38,6 +41,62 @@ export class RoomsService {
     }
 
     return room;
+  }
+
+  async searchAvailableRooms(dto: SearchRoomsDto) {
+    const checkIn = new Date(dto.checkIn);
+    const checkOut = new Date(dto.checkOut);
+
+    if (
+      !Number.isFinite(checkIn.getTime()) ||
+      !Number.isFinite(checkOut.getTime()) ||
+      checkIn >= checkOut
+    ) {
+      throw new BadRequestException(
+        'Check-out must be later than check-in',
+      );
+    }
+
+    const conflictingRoomIds = await this.prisma.booking.findMany({
+      where: {
+        status: {
+          in: [
+            BookingStatus.PENDING,
+            BookingStatus.APPROVED,
+            BookingStatus.PAID,
+          ],
+        },
+        checkIn: { lt: checkOut },
+        checkOut: { gt: checkIn },
+      },
+      select: {
+        roomId: true,
+      },
+      distinct: ['roomId'],
+    });
+
+    const excludedRoomIds = conflictingRoomIds.map(
+      ({ roomId }) => roomId,
+    );
+
+    return this.prisma.room.findMany({
+      where: {
+        isActive: true,
+        ...(dto.capacity !== undefined && {
+          capacity: {
+            gte: dto.capacity,
+          },
+        }),
+        ...(excludedRoomIds.length > 0 && {
+          id: {
+            notIn: excludedRoomIds,
+          },
+        }),
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 
   // FR-8: Create a new room (Admin only)
