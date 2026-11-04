@@ -10,6 +10,7 @@ import { RoomsModule } from './rooms/rooms.module';
 import { AuthModule } from './auth/auth.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { NotificationsModule } from './notifications/notifications.module'; // 1. Import NotificationsModule
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -26,6 +27,8 @@ import { NotificationsModule } from './notifications/notifications.module'; // 1
     BookingsModule,
 
     NotificationsModule, // 2. Add NotificationsModule here
+
+    UsersModule,
 
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
