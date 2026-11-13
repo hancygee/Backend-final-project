@@ -63,6 +63,16 @@ Development and collaboration must comply with academic integrity guidelines.
 3. From the `backend` directory, apply the database migrations with `npx prisma migrate deploy`.
 4. Start the API with `npm run start:dev`.
 
+## End-to-end tests
+
+From the `backend` directory, run `npm test` for unit tests. The end-to-end suite below exercises the API against a separate database.
+
+The end-to-end suite uses a dedicated `hotel_booking_test` database and refuses to run against another database.
+
+1. From the repository root, start the isolated test database with `docker compose --profile test up -d --wait mysql-test`.
+2. Copy `backend/.env.test.example` to `backend/.env.test`. If you override `MYSQL_TEST_PASSWORD` in the environment, use the same password in `DATABASE_URL`.
+3. From the `backend` directory, run `npm run test:e2e`. The test command applies Prisma migrations, exercises the API over HTTP, and cleans test data.
+
 The registration endpoint is `POST /auth/register`. Send JSON with `name`, `email`, and a password of at least 8 characters, for example:
 
 ```json
