@@ -83,7 +83,138 @@ The registration endpoint is `POST /auth/register`. Send JSON with `name`, `emai
 }
 ```
 
-## 4. System Roles
+## 3.1 What I have completed so far
+
+This project has already been implemented as a working NestJS hotel booking backend with the core business flow in place.
+
+### Completed features
+
+* NestJS backend application scaffolded with TypeScript and Prisma
+* MySQL database configuration and schema for users, rooms, bookings, and notifications
+* User registration and login with password hashing
+* JWT authentication and protected endpoints
+* Role-based access control for regular users and admin users
+* Room management APIs for creating, updating, and deactivating rooms
+* Room search and availability filtering
+* Booking creation, user booking history, and admin booking management
+* Booking cancellation and booking status updates
+* Notification records for booking events
+* Swagger/OpenAPI documentation at `/api/docs`
+* Caching, throttling, and static room image upload support
+* Docker Compose setup for local development and isolated test database
+* Jest-based unit and end-to-end testing setup
+
+### Current project status
+
+The backend is structured to support the hotel booking flow end-to-end, including authentication, room listing and search, booking management, and admin operations. The remaining work is mainly about final validation, documentation cleanup, and preparing the project for submission.
+
+## 4. Running the project
+
+### 1) Install dependencies
+
+From the backend folder:
+
+```bash
+cd backend
+npm install
+npx prisma generate
+```
+
+If the generated Prisma client is missing, run `npx prisma generate` again before starting the app.
+
+### 2) Configure environment variables
+
+Create the development environment file from the template:
+
+```bash
+cp .env.example .env
+```
+
+The default development database is configured for the local MySQL container in Docker Compose.
+
+### 3) Start the database
+
+From the repository root:
+
+```bash
+docker compose up -d
+```
+
+This starts the MySQL server used by the project. The app container can also be built and run with Docker if you want the full stack in one command.
+
+### 4) Apply Prisma migrations
+
+Inside the backend folder:
+
+```bash
+npx prisma migrate deploy
+```
+
+### 5) Run the API in development mode
+
+```bash
+npm run start:dev
+```
+
+The API will run on:
+
+```text
+http://localhost:3000
+```
+
+Swagger documentation is available here:
+
+```text
+http://localhost:3000/api/docs
+```
+
+### 6) Run with Docker (full stack)
+
+From the repository root:
+
+```bash
+docker compose up --build
+```
+
+This builds and runs the backend service together with the database container. The Docker setup is configured for local development and includes a separate test database profile for integration/e2e work.
+
+### 7) Run tests
+
+```bash
+cd backend
+npm run test
+```
+
+For end-to-end tests:
+
+```bash
+cd backend
+npm run test:e2e
+```
+
+Before E2E testing, start the isolated test database from the root:
+
+```bash
+docker compose --profile test up -d --wait mysql-test
+```
+
+### Example API flow
+
+1. Register a user:
+
+```bash
+POST /auth/register
+```
+
+2. Log in and get a JWT token:
+
+```bash
+POST /auth/login
+```
+
+3. Use the token as a bearer token to call protected routes such as room search, booking creation, and admin management endpoints.
+
+## 5. System Roles
 
 The system supports three categories of users.
 
@@ -101,13 +232,13 @@ An authorized administrator who can manage hotel rooms, access all bookings, and
 
 Detailed permissions must follow the Hotel Booking Specification.
 
-## 5. Functional Scope
+## 6. Functional Scope
 
 The backend must implement all **38 functional requirements (FR-1 through FR-38)** defined in the Hotel Booking Specification.
 
 The main functional areas are:
 
-### 5.1 User Accounts and Authentication (FR-1–FR-7)
+### 6.1 User Accounts and Authentication (FR-1–FR-7)
 
 * User registration
 * Login and logout
@@ -116,7 +247,7 @@ The main functional areas are:
 * Support Regular User and Admin roles
 * Enforce appropriate authorization
 
-### 5.2 Room Management (FR-8–FR-16)
+### 6.2 Room Management (FR-8–FR-16)
 
 * Admin room creation
 * Room information retrieval
@@ -145,7 +276,7 @@ Booking statuses:
 | Cancelled | Booking cancelled      |
 | Paid      | Booking marked as paid |
 
-### 5.4 Room Search and Filtering
+### 6.4 Room Search and Filtering
 
 The API must support room searching based on:
 
@@ -155,11 +286,11 @@ The API must support room searching based on:
 
 Unavailable rooms must be excluded from relevant availability results.
 
-### 5.5 Notifications
+### 6.5 Notifications
 
 The backend must record booking-related events, including booking creation and cancellation, so that clients can retrieve notifications.
 
-### 5.6 System Operations
+### 6.6 System Operations
 
 * Consistent success responses
 * Meaningful error responses
@@ -168,7 +299,7 @@ The backend must record booking-related events, including booking creation and c
 * Docker-compatible execution
 * Server deployment readiness
 
-## 6. Project Implementation Tasks
+## 7. Project Implementation Tasks
 
 ### Task 1: Core REST API Design and Implementation
 
@@ -279,7 +410,7 @@ The deployment must provide:
 * Securely provided test account details
 * Step-by-step deployment instructions
 
-## 7. Non-Functional Requirements
+## 8. Non-Functional Requirements
 
 The implementation must satisfy the non-functional requirements in the Hotel Booking Specification.
 
@@ -296,7 +427,7 @@ Major quality areas include:
 | Testing         | Automated unit, integration, and E2E testing              |
 | Deployment      | Containerized and configurable execution                  |
 
-## 8. Documentation Requirements
+## 9. Documentation Requirements
 
 The repository must include a comprehensive `README.md` covering:
 
@@ -314,7 +445,7 @@ The repository must include a comprehensive `README.md` covering:
 
 The project must also provide Swagger/OpenAPI documentation.
 
-## 9. Submission Requirements
+## 10. Submission Requirements
 
 Submission is handled through **Classroom50**.
 
@@ -341,7 +472,7 @@ Other members must join the correct Classroom50 team.
 
 Do not submit `node_modules`, unnecessary generated dependencies, or actual credentials and secrets.
 
-## 10. Grading Criteria
+## 11. Grading Criteria
 
 | Category                                |  Points |
 | --------------------------------------- | ------: |
@@ -362,7 +493,7 @@ Do not submit `node_modules`, unnecessary generated dependencies, or actual cred
 * Security problems, such as exposing passwords, can result in serious deductions.
 * Correct design and genuine implementation are essential.
 
-## 11. Peer Code Review
+## 12. Peer Code Review
 
 Project grading includes peer review.
 
@@ -378,7 +509,7 @@ Reviewers may earn bonus points of up to 3% for identifying genuine issues. Inac
 
 Failure to submit the required peer review by this deadline results in a zero project score for the reviewing group.
 
-## 12. Development Progress
+## 13. Development Progress
 
 Use this checklist to track the implementation.
 
@@ -409,7 +540,7 @@ Use this checklist to track the implementation.
 * [ ] Submit project through Classroom50
 * [ ] Complete assigned peer code review
 
-## 13. References
+## 14. References
 
 **Official Project Description:**
 https://wudhicharts.notion.site/69-1-ITCS258-Project-Description-3af44724c30680a89d55c5b71b052964
