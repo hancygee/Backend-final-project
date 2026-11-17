@@ -267,7 +267,7 @@ The main functional areas are:
 * Prevent double booking
 * Allow administrators to view and manage all bookings
 
-Booking statuses:
+Booking statuses: 
 
 | Status    | Meaning                |
 | --------- | ---------------------- |
