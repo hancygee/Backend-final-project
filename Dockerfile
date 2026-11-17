@@ -28,4 +28,4 @@ COPY --from=builder /usr/src/app/dist ./dist
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main"]
+CMD ["node", "dist/main"]
