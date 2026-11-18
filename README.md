@@ -168,6 +168,9 @@ Swagger documentation is available here:
 http://localhost:3000/api/docs
 ```
 
+Railway app deployment:
+https://backend-final-project-production-ed7dc795.up.railway.app/api/docs
+
 ### 6) Run with Docker (full stack)
 
 From the repository root:
