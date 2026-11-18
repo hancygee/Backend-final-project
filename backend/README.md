@@ -1,126 +1,178 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Hotel Booking API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS REST API for hotel room browsing and management, user authentication, bookings, and notifications. It uses Prisma and MySQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Requirements
 
-## Description
+- Node.js 22 or later and npm
+- Docker Desktop (or Docker Engine with Docker Compose) for the local MySQL database
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+Check that these commands are available:
 
 ```bash
-$ npm install
+node --version
+npm --version
+docker --version
+docker compose version
 ```
 
-## Compile and run the project
+## Run locally
+
+Run the commands from the indicated directories. In PowerShell, use `Copy-Item` to create the environment files.
+
+### 1. Configure the backend
+
+From `backend/`, create the environment file:
+
+macOS/Linux:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+The template is configured for the local Compose database at `localhost:3307`. Change `JWT_SECRET` to a private random value for your own environment. Do not commit `.env`.
+
+### 2. Start MySQL
+
+From the repository root (the directory containing `docker-compose.yml`), start the database and wait until it is healthy:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d --wait mysql
 ```
 
-## Deployment
+### 3. Install dependencies and prepare the database
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+From `backend/`:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
+npx prisma generate
+npx prisma migrate deploy
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+`npm install` also generates Prisma Client through the configured postinstall script; running `npx prisma generate` explicitly is safe and ensures it is available.
 
-## Observability
+### 4. (Optional) Add demo accounts and sample rooms
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-This project is already instrumented. To connect it, run this and approve the code it prints at [observe.nestjs.com/link](https://observe.nestjs.com/link) - signing up for free if you have no account:
+From `backend/`, run:
 
 ```bash
-$ npx @nestjs/observe link
+npx prisma db seed
 ```
 
-It writes the app key and secret into `.env` and makes every `nest start` script (`start`, `start:dev`, `start:debug`) load it. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead.
+This creates `admin@hotel.com` and `user@hotel.com` (both use `Password123!`) and three sample rooms. **The seed deletes existing notifications, bookings, rooms, and users first. Run it only against a disposable or intended local database—never against production.**
 
-Or do it by hand: create an application and an API key at [observe.nestjs.com](https://observe.nestjs.com), and set the pair as `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment the app runs in.
+### 5. Start and open the API
 
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
+From `backend/`:
 
-## Resources
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+- API base URL: <http://localhost:3000>
+- Swagger UI: <http://localhost:3000/api/docs>
+- Health check: <http://localhost:3000/health>
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Keep the terminal running while you use the API. Press `Ctrl+C` to stop the development server.
 
-## Support
+## Run the full stack with Docker
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+From the repository root:
 
-## Stay in touch
+```bash
+docker compose up --build -d app mysql
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+This starts MySQL and the API. The API container applies database migrations on startup. Open <http://localhost:3000/api/docs> to use Swagger. To add demo accounts and rooms to this local Docker database, run:
 
-## License
+```bash
+docker compose exec app npx prisma db seed
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Remember that seeding clears existing users, rooms, bookings, and notifications in that database.
+
+Stop the app and development database from the repository root:
+
+```bash
+docker compose down
+```
+
+## Demo API
+
+The deployed Swagger UI is at <https://backend-final-project-production-ed7dc795.up.railway.app/api/docs>. The deployed database is seeded with these shared demonstration accounts:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@hotel.com` | `Password123!` |
+| User | `user@hotel.com` | `Password123!` |
+
+In Swagger, use `POST /auth/login` with either account to get an access token. Click **Authorize** and enter the token to try protected endpoints. Room listing and search are public.
+
+`GET /rooms` returns the seeded rooms:
+
+| Room | Capacity | Price per night |
+| --- | ---: | ---: |
+| Deluxe Ocean Suite | 2 | 250.00 |
+| Standard Twin Room | 2 | 120.00 |
+| Executive Penthouse | 4 | 500.00 |
+
+These public demo credentials are for testing only; do not use them for sensitive information or other environments.
+
+## Tests and build
+
+From `backend/`, run unit tests:
+
+```bash
+npm test -- --runInBand
+```
+
+The end-to-end test uses its own `hotel_booking_test` database. From the repository root, start it:
+
+```bash
+docker compose --profile test up -d --wait mysql-test
+```
+
+Then from `backend/`, create the test environment file:
+
+macOS/Linux:
+
+```bash
+cp .env.test.example .env.test
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.test.example .env.test
+```
+
+Run the end-to-end test from `backend/`:
+
+```bash
+npm run test:e2e -- --runInBand
+```
+
+The test applies migrations and cleans up its test records. It refuses to run against any database other than `hotel_booking_test`.
+
+To build the API from `backend/`:
+
+```bash
+npm run build
+```
+
+## Useful commands
+
+| Task | Command | Run from |
+| --- | --- | --- |
+| Start development server | `npm run start:dev` | `backend/` |
+| Run unit tests | `npm test -- --runInBand` | `backend/` |
+| Run end-to-end tests | `npm run test:e2e -- --runInBand` | `backend/` |
+| Build for production | `npm run build` | `backend/` |
+| Stop Docker services | `docker compose down` | Repository root |
