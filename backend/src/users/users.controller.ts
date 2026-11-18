@@ -12,12 +12,13 @@ export class UsersController {
 
   @Get('me')
   async getProfile(@Request() req: any) {
-    // Expects req.user to contain payload from JwtStrategy (e.g. req.user.userId or req.user.id)
-    return this.usersService.getProfile(req.user.userId);
+    const userId = req.user.userId || req.user.sub || req.user.id;
+    return this.usersService.getProfile(userId);
   }
 
   @Patch('me')
   async updateProfile(@Request() req: any, @Body() dto: UpdateProfileDto) {
-    return this.usersService.updateProfile(req.user.userId, dto);
+    const userId = req.user.userId || req.user.sub || req.user.id;
+    return this.usersService.updateProfile(userId, dto);
   }
 }
