@@ -15,6 +15,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 
@@ -38,6 +39,7 @@ export class AuthController {
 
   
 @Get('me')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 async getProfile(
   @Req() req: Request & { user?: { sub: number } },

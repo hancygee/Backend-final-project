@@ -32,6 +32,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../generated/prisma/enums';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('rooms')
 export class RoomsController {
@@ -74,6 +75,7 @@ export class RoomsController {
   // Admin only
   // ==========================================
   @Post()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.CREATED)
@@ -89,6 +91,7 @@ export class RoomsController {
   // Admin only
   // ==========================================
   @Patch(':id')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async update(
@@ -107,6 +110,7 @@ export class RoomsController {
   // Admin only
   // ==========================================
   @Delete(':id')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async deactivate(
@@ -122,6 +126,7 @@ export class RoomsController {
   // Admin only
   // ==========================================
   @Post(':id/image')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @UseInterceptors(

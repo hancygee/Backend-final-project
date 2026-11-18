@@ -21,6 +21,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../generated/prisma/enums';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 // Authenticated request type
 type AuthenticatedRequest = Request & {
   user: {
@@ -41,6 +42,7 @@ export class BookingsController {
   // Authenticated users only
   // ==========================================
   @Post()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -61,6 +63,7 @@ export class BookingsController {
   // Authenticated users only
   // ==========================================
   @Get()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async findMyBookings(
     @Req() req: AuthenticatedRequest,
@@ -77,6 +80,7 @@ export class BookingsController {
   // ==========================================
   
 @Patch('admin/:id/status')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
 async updateStatus(
@@ -91,6 +95,7 @@ async updateStatus(
 
 
   @Get(':id')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async findMyBookingById(
     @Req() req: AuthenticatedRequest,
@@ -104,6 +109,7 @@ async updateStatus(
   
   // FR-25: Admin-only booking list
   @Get('admin/all')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async findAllForAdmin() {
@@ -111,6 +117,7 @@ async updateStatus(
   }
  
 @Patch(':id/cancel')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 async cancelMyBooking(
   @Req() req: AuthenticatedRequest,
