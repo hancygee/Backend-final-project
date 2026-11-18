@@ -1,9 +1,27 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import * as bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient();
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL is not configured');
+}
+
+const url = new URL(databaseUrl);
+const adapter = new PrismaMariaDb({
+  host: url.hostname,
+  port: Number(url.port || 3306),
+  user: decodeURIComponent(url.username),
+  password: decodeURIComponent(url.password),
+  database: url.pathname.slice(1),
+  connectionLimit: 5,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  await prisma.notification.deleteMany();
   await prisma.booking.deleteMany();
   await prisma.room.deleteMany();
   await prisma.user.deleteMany();
@@ -13,17 +31,19 @@ async function main() {
   // 1. Create Default Admin Account
   const admin = await prisma.user.create({
     data: {
+      name: 'Hotel Administrator',
       email: 'admin@hotel.com',
-      password: hashedPassword,
-      role: 'ADMIN', // Adjust role enum/string based on your schema
+      passwordHash: hashedPassword,
+      role: 'ADMIN',
     },
   });
 
   // 2. Create Default Test User Account
   const user = await prisma.user.create({
     data: {
+      name: 'Hotel Test User',
       email: 'user@hotel.com',
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       role: 'USER',
     },
   });
@@ -34,23 +54,20 @@ async function main() {
       {
         name: 'Deluxe Ocean Suite',
         description: 'Spacious room with a king-sized bed and ocean view.',
-        price: 250.0,
+        pricePerNight: 250.0,
         capacity: 2,
-        isAvailable: true,
       },
       {
         name: 'Standard Twin Room',
         description: 'Cozy room equipped with two single beds.',
-        price: 120.0,
+        pricePerNight: 120.0,
         capacity: 2,
-        isAvailable: true,
       },
       {
         name: 'Executive Penthouse',
         description: 'Luxury top-floor suite with private balcony and Jacuzzi.',
-        price: 500.0,
+        pricePerNight: 500.0,
         capacity: 4,
-        isAvailable: true,
       },
     ],
   });
