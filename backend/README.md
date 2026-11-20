@@ -167,6 +167,7 @@ To build the API from `backend/`:
 npm run build
 ```
 ## IF cant find the DB, try to copy DB to MySQL Workbench
+```bash
 DROP DATABASE IF EXISTS hotel_booking;
 CREATE DATABASE IF NOT EXISTS hotel_booking
    CHARACTER SET utf8mb4
@@ -244,7 +245,7 @@ ALTER TABLE `Notification` ADD CONSTRAINT `Notification_userId_fkey` FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE `Notification` ADD CONSTRAINT `Notification_bookingId_fkey` FOREIGN KEY (`bookingId`) REFERENCES `Booking`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
+```
 ## Useful commands
 
 | Task | Command | Run from |
