@@ -166,7 +166,7 @@ To build the API from `backend/`:
 ```bash
 npm run build
 ```
-
+## IF cant find the DB, try to copy DB to MySQL Workbench
 ## Useful commands
 
 | Task | Command | Run from |
