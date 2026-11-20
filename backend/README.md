@@ -166,7 +166,7 @@ To build the API from `backend/`:
 ```bash
 npm run build
 ```
-## IF cant find the DB, try to copy DB to MySQL Workbench
+## If system can't find the DB, try to copy DB to MySQL Workbench
 ```bash
 DROP DATABASE IF EXISTS hotel_booking;
 CREATE DATABASE IF NOT EXISTS hotel_booking
